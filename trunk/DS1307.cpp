@@ -117,7 +117,7 @@ void DS1307::set(int c, int v)  // Update buffer, then update the chip
     }
     break;
   case DS1307_DATE:
-    if(v<31 && v>-1)
+    if(v<32 && v>-1)
     {
       rtc_bcd[DS1307_DATE]=((v / 10)<<4) + (v % 10);
     }
