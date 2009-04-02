@@ -46,6 +46,7 @@ class DS1307
     DS1307();
     void get(int *, boolean);
     int get(int, boolean);
+    int min_of_day(boolean);
 	void set(int, int);
     void start(void);
     void stop(void);

@@ -94,7 +94,7 @@ void DS1307::set(int c, int v)  // Update buffer, then update the chip
     {
       //preserve existing clock state (running/stopped)
       int state=rtc_bcd[DS1307_SEC] & DS1307_CLOCKHALT;
-      rtc_bcd[DS1307_SEC]=state | ((v / 10)<<4) + (v % 10);
+      rtc_bcd[DS1307_SEC]=state | (((v / 10)<<4) + (v % 10));
     }
     break; 
   case DS1307_MIN:
@@ -136,6 +136,14 @@ void DS1307::set(int c, int v)  // Update buffer, then update the chip
     break;
   } // end switch
   save();
+}
+
+int DS1307::min_of_day(boolean refresh)
+{
+    // return minutes of day  (0-1440)
+    if(refresh) read();
+    int MoD=(get(DS1307_HR,false)*60)+get(DS1307_MIN,false);
+    return MoD; 
 }
 
 void DS1307::stop(void)
