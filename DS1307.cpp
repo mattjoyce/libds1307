@@ -14,10 +14,10 @@ DS1307 RTC=DS1307();
 
 // Aquire data from the RTC chip in BCD format
 // refresh the buffer
-void DS1307::read(void)
+void DS1307::read_rtc(void)
 {
   // use the Wire lib to connect to tho rtc
-  // reset the resgiter pointer to zero
+  // reset the register pointer to zero
   Wire.beginTransmission(DS1307_CTRL_ID);
     Wire.send(0x00);
   Wire.endTransmission();
@@ -32,7 +32,7 @@ void DS1307::read(void)
 }
 
 // update the data on the IC from the bcd formatted data in the buffer
-void DS1307::save(void)
+void DS1307::save_rtc(void)
 {
   Wire.beginTransmission(DS1307_CTRL_ID);
   Wire.send(0x00); // reset register pointer
@@ -47,7 +47,7 @@ void DS1307::save(void)
 // PUBLIC FUNCTIONS
 void DS1307::get(int *rtc, boolean refresh)   // Aquire data from buffer and convert to int, refresh buffer if required
 {
-  if(refresh) read();
+  if(refresh) read_rtc();
   for(int i=0;i<7;i++)  // cycle through each component, create array of data
   {
 	rtc[i]=get(i, 0);
@@ -56,7 +56,7 @@ void DS1307::get(int *rtc, boolean refresh)   // Aquire data from buffer and con
 
 int DS1307::get(int c, boolean refresh)  // aquire individual RTC item from buffer, return as int, refresh buffer if required
 {
-  if(refresh) read();
+  if(refresh) read_rtc();
   int v=-1;
   switch(c)
   {
@@ -135,13 +135,13 @@ void DS1307::set(int c, int v)  // Update buffer, then update the chip
     }
     break;
   } // end switch
-  save();
+  save_rtc();
 }
 
 int DS1307::min_of_day(boolean refresh)
 {
     // return minutes of day  (0-1440)
-    if(refresh) read();
+    if(refresh) read_rtc();
     int MoD=(get(DS1307_HR,false)*60)+get(DS1307_MIN,false);
     return MoD; 
 }
@@ -151,7 +151,7 @@ void DS1307::stop(void)
 	// set the ClockHalt bit high to stop the rtc
 	// this bit is part of the seconds byte
     rtc_bcd[DS1307_SEC]=rtc_bcd[DS1307_SEC] | DS1307_CLOCKHALT;
-    save();
+    save_rtc();
 }
 
 void DS1307::start(void)
@@ -159,8 +159,51 @@ void DS1307::start(void)
 	// unset the ClockHalt bit to start the rtc
 	// TODO : preserve existing seconds
     rtc_bcd[DS1307_SEC]=0;
-	save();
+	save_rtc();
 }
 
+void DS1307::get_sram_data(byte *sram_data)
+{
+  // set the register to the sram area and read 56 bytes
+  Wire.beginTransmission(DS1307_CTRL_ID);
+    Wire.send(DS1307_DATASTART);
+  Wire.endTransmission();
+  
+  for(int i=0;i<56;i++)
+  {
+	Wire.requestFrom(DS1307_CTRL_ID, 56);
+    sram_data[i]=Wire.receive();
+  }
+}
 
+void DS1307::set_sram_data(byte *sram_data)
+{
+  // set the register to the sram area and save 56 bytes
+  Wire.beginTransmission(DS1307_CTRL_ID);
+    Wire.send(DS1307_DATASTART);
+  
+  for(int i=0;i<56;i++)
+  {
+    Wire.send(sram_data[i]);
+  }
+  Wire.endTransmission();
+}
 
+byte DS1307::get_sram_byte(int p)
+{
+    // set the register to a specific the sram location and read a single byte
+    Wire.beginTransmission(DS1307_CTRL_ID);
+    Wire.send(DS1307_DATASTART+p);
+    Wire.endTransmission();  
+    Wire.requestFrom(DS1307_CTRL_ID, 1);
+    return Wire.receive();
+}
+
+void DS1307::set_sram_byte(byte b, int p)
+{
+    // set the register to a specific the sram location and save a single byte
+    Wire.beginTransmission(DS1307_CTRL_ID);
+    Wire.send(DS1307_DATASTART+p);
+    Wire.send(b);
+    Wire.endTransmission();  
+}

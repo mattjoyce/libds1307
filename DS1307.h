@@ -38,6 +38,8 @@
 #define DS1307_HI_MTH  B00110000
 #define DS1307_HI_YR   B11110000
 
+#define DS1307_DATASTART 0x08
+
 // library interface description
 class DS1307
 {
@@ -50,12 +52,15 @@ class DS1307
 	void set(int, int);
     void start(void);
     void stop(void);
-
+    void get_sram_data(byte *);
+    void set_sram_data(byte *);
+    byte get_sram_byte(int);
+    void set_sram_byte(byte, int);
   // library-accessible "private" interface
   private:
     byte rtc_bcd[7]; // used prior to read/set ds1307 registers;
-	void read(void);
-	void save(void);
+	void read_rtc(void);
+	void save_rtc(void);
 };
 
 extern DS1307 RTC;
