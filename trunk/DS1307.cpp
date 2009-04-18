@@ -1,3 +1,10 @@
+/*
+  DS1307.cpp - library for DS1307 rtc
+  Created by matt.joyce@gmail.com, December, 2007.
+  Released into the public domain.
+*/
+
+
 extern "C" {
 #include <../Wire/Wire.h>
 }
