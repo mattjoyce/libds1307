@@ -2,6 +2,16 @@
   DS1307.h - library for DS1307 rtc
  */
 
+/*
+UPDATE 2012-Aug-06 maintain compatibility with Arduino IDE v1.0.1
+Changes contributed by 
+  RIVA http://arduino.cc/forum/index.php?action=profile;u=112546
+  rcim http://arduino.cc/forum/index.php?action=profile;u=134640
+
+http://arduino.cc/forum/index.php/topic,117202.msg882475.html#msg882475
+*/ 
+ 
+ 
 // ensure this library description is only included once
 #ifndef DS1307_h
 #define DS1307_h
