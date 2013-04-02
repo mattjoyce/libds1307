@@ -137,7 +137,7 @@ void DS1307::set(int c, int v)  // Update buffer, then update the chip
     }
     break;
   case DS1307_YR:
-    if(v<13 && v>-1)
+    if(v<99 && v>-1)
     {
 	rtc_bcd[DS1307_YR]=((v / 10)<<4) + (v % 10);
     }
