@@ -105,3 +105,6 @@ Matt Joyce (2009-2012)
 ## Preservation
 
 This repository was created in 2025 to preserve this historically significant Arduino library after the shutdown of Google Code. The code remains unchanged from the last Google Code version (August 2012).
+
+## Changelog
+See [CHANGELOG.md](CHANGELOG.md).
